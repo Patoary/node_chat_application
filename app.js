@@ -5,7 +5,11 @@ const mongoose = require("mongoose");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const port = process.env.PORT || 4000;
+
 // internal imports
+const loginRouter = require("./router/loginRouter");
+const inboxRouter = require("./router/inboxRouter");
+const usersRouter = require("./router/usersRouter");
 const {
   notFoundHandler,
   errorHandler,
@@ -43,9 +47,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routing setup
+app.use("/", loginRouter);
+app.use("/users", usersRouter);
+app.use("/inbox", inboxRouter);
 
 //error handling
-
 //404 not found error
 app.use(notFoundHandler);
 
