@@ -1,10 +1,13 @@
 //external imports
-const { check } = require("express-validator");
+const { check, validationResult } = require("express-validator");
 const createError = require("http-errors");
+const path = require("path");
+const { unlink } = require("fs");
 
 //internal imports
 const User = require("../../models/People");
-// add user
+const { error } = require("console");
+// add user. validations
 const addUserValidations = [
   // check name validation
   check("name")
@@ -50,6 +53,30 @@ const addUserValidations = [
     ),
 ];
 
+// addUserValidationHandler for handle the validations errors
+const addUserValidationHandler = function (req, res, next) {
+  const errors = validationResult(req);
+  const mappedErrors = errors.mapped();
+  if (Object.keys(mappedErrors).length === 0) {
+    next();
+  } else {
+    // remove uploaded files
+    if (req.files.length > 0) {
+      const { filename } = req.files[0];
+      unlink(
+        path.join(__dirname, `/public/uploads/avatars/${filename}`),
+        (error) => {
+          if (error) console.log(error);
+        }
+      );
+    }
+    res.status(500).join({
+      errors: mappedErrors,
+    });
+  }
+};
+
 module.exports = {
   addUserValidations,
+  addUserValidationHandler,
 };
