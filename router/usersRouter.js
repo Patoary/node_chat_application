@@ -14,5 +14,11 @@ const {
 router.get("/", decorateHtmlResponse("Users"), getUsers);
 
 //add user
-router.post("/", avatarUpload, addUserValidations, addUserValidationHandler);
+router.post(
+  "/",
+  avatarUpload,
+  addUserValidations,
+  addUserValidationHandler,
+  addUser
+);
 module.exports = router;
