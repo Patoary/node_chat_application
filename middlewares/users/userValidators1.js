@@ -1,20 +1,21 @@
-// external imports
+//external imports
 const { check, validationResult } = require("express-validator");
 const createError = require("http-errors");
 const path = require("path");
 const { unlink } = require("fs");
 
-// internal imports
+//internal imports
 const User = require("../../models/People");
-
-// add user
-const addUserValidators = [
+// add user. validations
+const addUserValidations = [
+  // check name validation
   check("name")
     .isLength({ min: 1 })
     .withMessage("Name is required")
     .isAlpha("en-US", { ignore: " -" })
     .withMessage("Name must not contain anything other than alphabet")
     .trim(),
+  // check email validation
   check("email")
     .isEmail()
     .withMessage("Invalid email address")
@@ -29,11 +30,10 @@ const addUserValidators = [
         throw createError(err.message);
       }
     }),
+  // check phone_number validation
   check("mobile")
-    .isMobilePhone("bn-BD", {
-      strictMode: true,
-    })
-    .withMessage("Mobile number must be a valid Bangladeshi mobile number")
+    .isMobilePhone(["bn-BD", "ja-JP"], { strictMode: true })
+    .withMessage("Mobile number must be a valid BD ro JP mobile number")
     .custom(async (value) => {
       try {
         const user = await User.findOne({ mobile: value });
@@ -44,13 +44,15 @@ const addUserValidators = [
         throw createError(err.message);
       }
     }),
+  // check password validation
   check("password")
     .isStrongPassword()
     .withMessage(
-      "Password must be at least 8 characters long & should contain at least 1 lowercase, 1 uppercase, 1 number & 1 symbol"
+      "Password must be at least 8 characters long & should be contain at least 1 lowercase, 1 uppercase, 1 number & 1 symbol"
     ),
 ];
 
+// addUserValidationHandler for handle the validations errors
 const addUserValidationHandler = function (req, res, next) {
   const errors = validationResult(req);
   const mappedErrors = errors.mapped();
@@ -67,15 +69,13 @@ const addUserValidationHandler = function (req, res, next) {
         }
       );
     }
-
-    // response the errors
-    res.status(500).json({
+    res.status(500).join({
       errors: mappedErrors,
     });
   }
 };
 
 module.exports = {
-  addUserValidators,
+  addUserValidations,
   addUserValidationHandler,
 };
