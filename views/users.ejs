@@ -54,18 +54,21 @@
         
         // delete user function
         async function deleteUser(userId) {
+          let isConfirmed = confirm('Are you sure you want to delete this item?');
+          if(isConfirmed){
             let response = await fetch(`/users/${userId}`, {
                 method: "DELETE",
             });
 
             let result = await response.json();
 
-            if (result.errors) {
+            if (result.er rors) {
                 deleteErrorToast.showToast();
             } else {
                 deleteToast.showToast();
                 document.getElementById(userId).remove();
-            }
+            }         
+          }
         }
     </script>
   </body>
