@@ -18,7 +18,7 @@ async function login(req, res, next) {
     const user = await User.findOne({
       $or: [{ email: req.body.username }, { mobile: req.body.username }],
     });
-    if (user && user._id) {
+    if (user) {
       const isValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
@@ -30,7 +30,7 @@ async function login(req, res, next) {
           username: user.name,
           mobile: user.mobile,
           email: user.email,
-          role: user,
+          role: "user",
         };
 
         //generate token
@@ -49,7 +49,7 @@ async function login(req, res, next) {
 
         res.render("inbox");
       } else {
-        throw createError("Login failed! Please try again.");
+        throw createError("Login failed! Please try again");
       }
     } else {
       throw createError("Login failed! Please try again.");
@@ -67,6 +67,7 @@ async function login(req, res, next) {
     });
   }
 }
+
 // do logout
 function logout(req, res) {
   res.clearCookie(process.env.COOKIE_NAME);
