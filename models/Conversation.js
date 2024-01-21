@@ -15,8 +15,8 @@ const conversationSchema = mongoose.Schema(
     },
 
     lastUpdated: {
-      type: Data,
-      default: Data.now,
+      type: Date,
+      default: Date.now,
     },
   },
   {
