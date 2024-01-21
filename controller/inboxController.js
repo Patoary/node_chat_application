@@ -92,6 +92,7 @@ function getInbox(req, res, next) {
 
   // get messages of a conversation
 async function getMessages(req, res, next) {
+  
   try {
     const messages = await Message.find({
       conversation_id: req.params.conversation_id,

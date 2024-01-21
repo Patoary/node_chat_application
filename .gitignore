@@ -1,5 +1,5 @@
 .vscode
 .env
-node_module
+node_modules
 public/uploads
 testCompair.js
