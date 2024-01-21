@@ -20,7 +20,7 @@ const messageSchema = mongoose.Schema(
       name: String,
       avatar: String,
     },
-    conversationId: {
+    conversation_id: {
       type: mongoose.Types.ObjectId,
       required: true,
     },
